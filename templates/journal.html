@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><title>Trade journal</title>
+<style>body{font:16px system-ui;max-width:1000px;margin:40px auto;padding:20px;background:#111827;color:#e5e7eb}a{color:#93c5fd}article{border:1px solid #475569;border-radius:10px;padding:20px;margin:20px 0}textarea{display:block;width:95%;min-height:90px;margin:12px 0}button{padding:10px}small{color:#cbd5e1}</style>
+<h1>Trade journal &amp; review notes</h1><a href="/">Dashboard</a> · <a href="/journal">Refresh</a> · <a href="/journal/export">Download all notes and events (ZIP)</a>
+<form action="/journal/export" method="get"><label>Day-end review date (IST): <input type="date" name="day"></label> <button>Download review bundle</button></form>
+<p>The bundle includes a summary, trade table, raw events, decision rulebooks and review notes. Upload it to ChatGPT after the session. No automatic upload or code tuning occurs.</p>
+<p>Each run saves its decision, inputs, settings, entries, exits and price samples. Timestamps are IST. Notes survive restarts. Latest 200 runs shown.</p>
+<p><strong>Dry-run results are simulated gross results.</strong> Fees, taxes, spread and slippage are excluded. Live order acknowledgements do not confirm fills. Review data before changing rules; this page never changes the strategy.</p>
+{% for name in notes %}<article><h2>{{ name }}</h2>
+<a href="{{ url_for('journal_file', name=name) }}" target="_blank" rel="noopener">Read note</a> ·
+<a href="{{ url_for('journal_file', name=name, download=1) }}">Download note</a> ·
+<a href="{{ url_for('journal_file', name=name.replace('.md','.jsonl'), download=1) }}">Download raw events</a>
+<form action="/journal/review" method="post"><input type="hidden" name="name" value="{{ name }}">
+<label>Review / proposed correction<textarea name="note" maxlength="10000" required placeholder="What happened? Which rule needs investigation? What change will be tested on new data?"></textarea></label><button>Add review note</button></form></article>
+{% else %}<p>No journal yet. Run Analyze, Execute or a manual dry-run trade.</p>{% endfor %}</html>
